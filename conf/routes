@@ -6,5 +6,7 @@
 # An example controller showing a sample home page
 GET     /login/:username/:password                          controllers.AuthController.login(username:String, password:String)
 
+GET     /messages                                           controllers.ChatController.index
 
+GET     /messages/send/:message                             controllers.ChatController.submitMessage(message: String)
       

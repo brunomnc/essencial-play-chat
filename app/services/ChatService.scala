@@ -20,7 +20,8 @@ object ChatService {
   // TODO: Complete:
   //  - Add a new message to `postedMessages`
   def chat(author: String, text: String): Message = {
-    postedMessages :+ Message(author, text)
-    postedMessages.last
+    val message = Message(author, text)
+    postedMessages = postedMessages :+ message
+    message
   }
 }

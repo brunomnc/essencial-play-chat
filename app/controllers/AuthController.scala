@@ -22,7 +22,9 @@ class AuthController  @Inject()(cc: ControllerComponents) extends AbstractContro
   def login(username: Username, password: Password): Action[AnyContent] = Action { request =>
       AuthService.login(LoginRequest(username, password)) match {
       case res: UserNotFound => Status(401)
-      case res: LoginSuccess => Ok("Logged in")
+      case res: LoginSuccess => Ok("Logged in").withCookies(
+        Cookie(name = "sessionId", value = res.sessionId)
+      )
       case res: PasswordIncorrect => Status(401)
       case _ => BadRequest("error")
     }

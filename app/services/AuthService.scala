@@ -22,13 +22,15 @@ object AuthService {
       case None => UserNotFound(request.username)
       case Some(password) => {
         if(password == request.password) {
-          val sessionId = "loginsuccess"
+          val sessionId = genSessionId
           sessions += sessionId -> request.username
           LoginSuccess(sessionId)
         } else PasswordIncorrect(request.username)
       }
     }
   }
+
+  def genSessionId: String = java.util.UUID.randomUUID toString
 
   // TODO: Complete:
   //  - Check if the session if in `sessions`:
