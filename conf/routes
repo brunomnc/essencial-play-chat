@@ -1,0 +1,10 @@
+
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /login/:username/:password                          controllers.AuthController.login(username:String, password:String)
+
+
+      
