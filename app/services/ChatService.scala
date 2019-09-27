@@ -1,5 +1,8 @@
 package services
 
+import akka.http.scaladsl.model.HttpHeader.ParsingResult.Ok
+import play.api.mvc.Result
+
 object ChatService {
   import ChatServiceMessages._
 
@@ -23,5 +26,14 @@ object ChatService {
     val message = Message(author, text)
     postedMessages = postedMessages :+ message
     message
+  }
+
+  def sendMessage(author: String, text: String): Either[String, Unit] = {
+    if(messages.exists(m => m.author == author && m.text == text)){
+      Left("Message already exists")
+    }
+    val message = Message(author, text)
+    postedMessages = postedMessages :+ message
+    Right(())
   }
 }

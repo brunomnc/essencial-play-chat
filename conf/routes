@@ -9,4 +9,7 @@ GET     /login/:username/:password                          controllers.AuthCont
 GET     /messages                                           controllers.ChatController.index
 
 GET     /messages/send/:message                             controllers.ChatController.submitMessage(message: String)
-      
+
+POST    /api/messages                                        controllers.ChatApiController.messages
+
+
