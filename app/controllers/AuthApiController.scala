@@ -1,12 +1,9 @@
 package controllers
-
-import java.util.UUID
-
-import scala.collection.mutable
 import play.api.mvc._
 import javax.inject._
 import play.api.libs.json.JsValue
 import play.api.mvc.Results.{BadRequest, Ok}
+import services.AuthServiceMessages
 
 @Singleton
 class AuthApiController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
@@ -21,7 +18,13 @@ class AuthApiController @Inject()(cc: ControllerComponents) extends AbstractCont
   //     - If the user was not found, return a BadRequest result containing the response
   //     - If the password was incorrect, return a PasswordIncorrect result containing the response
   def login: Action[JsValue] = Action(parse.json) { implicit request =>
-???
+    val res = for {
+      username <- (request.body \ "username").validate[String].asEither.fold(_ => Left("username validation error"), user => Right(user))
+      password <- (request.body \ "password").validate[String].asEither.fold(_ => Left("invalid password"), password => Right((password)))
+      loginResult <- AuthService.apilogin(LoginRequest(username, password))
+    } yield loginResult
+
+    res.fold(e => BadRequest(""), s => Ok(s.toString))
   }
 
   // TODO: Complete:

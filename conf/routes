@@ -12,4 +12,4 @@ GET     /messages/send/:message                             controllers.ChatCont
 
 POST    /api/messages                                        controllers.ChatApiController.messages
 
-
+POST    /api/login                                          controllers.AuthApiController.login

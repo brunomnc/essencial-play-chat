@@ -30,6 +30,19 @@ object AuthService {
     }
   }
 
+  def apilogin(request: LoginRequest): Either[LoginResponse, SessionId] = {
+    passwords.get(request.username) match {
+      case None => Left(UserNotFound(request.username))
+      case Some(password) => {
+        if(password == request.password) {
+          val sessionId = genSessionId
+          sessions += sessionId -> request.username
+          Right(sessionId)
+        } else Left(PasswordIncorrect(request.username))
+      }
+    }
+  }
+
   def genSessionId: String = java.util.UUID.randomUUID toString
 
   // TODO: Complete:
