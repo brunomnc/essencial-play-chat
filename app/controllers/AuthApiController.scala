@@ -24,7 +24,7 @@ class AuthApiController @Inject()(cc: ControllerComponents) extends AbstractCont
       loginResult <- AuthService.apilogin(LoginRequest(username, password))
     } yield loginResult
 
-    res.fold(e => BadRequest(""), s => Ok(s.toString))
+    res.fold(e => BadRequest(e.toString), s => Ok(s.toString).withCookies(Cookie("sessionId", s)))
   }
 
   // TODO: Complete:
@@ -33,7 +33,13 @@ class AuthApiController @Inject()(cc: ControllerComponents) extends AbstractCont
   //  - Return an appropriate result based on the response:
   //     - If the session was found, return an Ok response
   //     - If the session was not found, return a NotFound response
-  def whoami = Action { implicit request =>
-    ???
+  def whoami: Action[AnyContent] = Action { implicit request =>
+    request.cookies.get("sessionId") match {
+      case Some(cookie) => AuthService.whoami(cookie.value) match {
+        case res: Credentials => Ok(res.toString)
+        case res: SessionNotFound => BadRequest(res.toString)
+      }
+      case None => BadRequest("No cookies found")
+    }
   }
 }

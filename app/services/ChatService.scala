@@ -32,8 +32,10 @@ object ChatService {
     if(messages.exists(m => m.author == author && m.text == text)){
       Left("Message already exists")
     }
-    val message = Message(author, text)
-    postedMessages = postedMessages :+ message
-    Right(())
+    else {
+      val message = Message(author, text)
+      postedMessages = postedMessages :+ message
+      Right(())
+    }
   }
 }

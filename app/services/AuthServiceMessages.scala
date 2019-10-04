@@ -19,8 +19,8 @@ object AuthServiceMessages {
 
   sealed trait LoginResponse
   final case class LoginSuccess(sessionId: SessionId) extends LoginResponse
-  final case class UserNotFound(username: Username) extends LoginResponse
-  final case class PasswordIncorrect(username: Username) extends LoginResponse
+  final case class UserNotFound(error: String = "User not found") extends LoginResponse
+  final case class PasswordIncorrect(error: String = "Incorrect Password") extends LoginResponse
 
   // Whoami endpoint ----------------------------
 

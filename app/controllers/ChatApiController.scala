@@ -38,7 +38,15 @@ class ChatApiController @Inject()(cc: ControllerComponents) extends AbstractCont
   //           - If it was valid, pass it to ChatService.chat
   //           - If it was invalud, return a BadRequest response
   //     - If the session was not found, return an Unauthorized response
-  def chat = Action { implicit request =>
-    ???
+  def chat: Action[JsValue] = Action(parse.json) { implicit request =>
+    request.cookies.get("sessionId") match {
+      case Some(cookie) => AuthService.whoami(cookie.value) match {
+        case res: Credentials => (for {
+          text <- (request.body \ "text").validate[String].asEither.fold(_ => Left("Invalid json body: no text found"), text =>  Right(text))
+          messageResult <- ChatService.sendMessage(res.username, text)
+        } yield messageResult).fold(e => BadRequest(e), s => Ok(""))
+        case res: SessionNotFound => BadRequest(res.toString)
+      }
+    }
   }
 }
